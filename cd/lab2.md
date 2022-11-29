@@ -1,4 +1,4 @@
-# Lab 2: Continuous Delivery/Deployment with GitHub Actions
+# Lab2: Implement workflows deploy to Appservice on DEV Environment
 
 Learn how continuous deployment or delivery application to Azure that working on GitHub Actions and implementation basic concepts.
 
@@ -12,7 +12,7 @@ After completing this lab, you'll be able to:
 
 - Investigate and solvable working on pipeline.
 
-<img src="../src/cd-flow.png">
+
 
 ## Prerequisites
 
@@ -32,15 +32,16 @@ After completing this lab, you'll be able to:
 ## Checking Resources Ready
 
 On the Azure Spoke checking list belows
-- app-<username>-az-usw3-dev-001
-- app-<username>-az-usw3-sit-001
-- id-<username>SelfHost-az-usw3-sbx-001
-- mongo-<username>-az-usw3-sbx-001
-- vm-<username>SelfHost-az-usw3-sbx-001
+- `app-<username>-az-usw3-dev-001`
+- `app-<username>-az-usw3-sit-001`
+- `id-<username>SelfHost-az-usw3-sbx-001`
+- `mongo-<username>-az-usw3-sbx-001`
+- `vm-<username>SelfHost-az-usw3-sbx-001`
 
 <img src="../src/rg-cd.png">
 
 ## Initialize GitHub workflow
+
 Checkout the source code from GitHub ```github.com/<username>/<username>-pipeline```.
 
 Open the terminal following command below
@@ -59,9 +60,9 @@ mkdir .github/workflows
 
 GitHub workflow is working on inside *.github/workflows* that contains GitHub workflows files that extension named .yaml
 
-## Create DEV - App Deploy workflows
+## Create DEV - Tutorial BE Deploy workflows
 
-On Create DEV - App Deploy workflows is working on workflows CI Dev dispatch and automate deploy to Azure WebApp.
+On Create DEV - Tutorial BE Deploy workflows is working on workflows CI Dev dispatch and automate deploy to Azure WebApp.
 
 <img src="../src/cd-dev-workflow.png">
 
@@ -74,7 +75,7 @@ Create the new file named ```dev-tutorial-be-deploy.yml``` inside ```.github/wor
 The first name starts with declare name of workflows
 
 ```yaml
-name: DEV - App Deploy
+name: DEV - Tutorial BE Deploy
 ```
 
 ### On (Events that trigger workflows)
@@ -109,7 +110,7 @@ env:
 
 ### Jobs
 
-Groups together all the jobs that run in the DEV - App Deploy workflow.
+Groups together all the jobs that run in the DEV - Tutorial BE Deploy workflow.
 
 ```yaml
 jobs:
@@ -164,7 +165,7 @@ The build artifact to contains in the job
 
 Commit and push code to GitHub repository on main branch.
 
-Go back to repository `<username>-pipeline` on tab Actions you can see workflow named ```DEV - App Deploy``` visible
+Go back to repository `<username>-pipeline` on tab Actions you can see workflow named ```DEV - Tutorial BE Deploy``` visible
 
 <img src="../src/show-workflow-cd-dev.png">
 
@@ -183,7 +184,7 @@ Enter
 
 <img src="../src/add-secret-env-dev.png">
 
-and Go back to Acitons tab and run workflows ```DEV - App Deploy```.
+and Go back to Acitons tab and run workflows ```DEV - Tutorial BE Deploy```.
 
 <img src="../src/inside-workflow-dev-1.png">
 
@@ -192,7 +193,7 @@ and Go back to Acitons tab and run workflows ```DEV - App Deploy```.
 **Summany Code**
 
 ```yaml
-name: DEV - App Deploy
+name: DEV - Tutorial BE Deploy
 
 on:
   repository_dispatch:
@@ -301,7 +302,7 @@ Deploy to Azure Webapp on Environment Dev
 
 Commit and push code to GitHub repository on main branch.
 
-Go back to repository `<username>-pipeline` on tab Actions you can see workflow named ```DEV - App Deploy``` visible
+Go back to repository `<username>-pipeline` on tab Actions you can see workflow named ```DEV - Tutorial BE Deploy``` visible
 
 <img src="../src/show-workflow-cd-dev.png">
 
@@ -333,7 +334,7 @@ Run deploy workflow dev
 **Summary Code**
 
 ```yaml
-name: DEV - App Deploy
+name: DEV - Tutorial BE Deploy
 
 on:
   repository_dispatch:
@@ -387,7 +388,7 @@ jobs:
 
   deploy-app-service:
     name: Deploy
-    runs-on: [ self-hosted, tara-sbx, vm-<username>SelfHost-az-usw3-sbx-001 ]
+    runs-on: [ self-hosted, <username>-sbx, vm-<username>SelfHost-az-usw3-sbx-001 ]
     needs: [build-app-service]
     environment:
       name: dev
@@ -424,3 +425,157 @@ jobs:
 **Logging**
 
 <img src="../src/log-cd-deploy-dev.png">
+
+## Create DEV - Configuration Set workflows
+
+On Create DEV - Tutorial BE Deploy workflows is working on workflows CI Dev dispatch and automate deploy to Azure WebApp.
+
+<img src="../src/conf-workflow.png">
+
+Create the new file named ```dev-tutorial-be-configuration-set.yml``` inside ```.github/workflows``` this on the Workflows which contains configure to Appservice (Webapp)
+
+<img src="../src/cd-conf-new-file-dev.png">
+
+### Name
+
+The first name starts with declare name of workflows
+
+```yaml
+name: DEV - Tutorial BE Configuration
+```
+
+### On (Events that trigger workflows)
+
+Enter events when do you want to execute or trigger the workflows
+
+you can see more of event type at [Events that trigger workflows - GitHub Docs](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows)
+
+```yaml
+on:
+  workflow_dispatch:
+```
+
+### Jobs
+
+Groups together all the jobs that run in the DEV - Tutorial BE Deploy workflow.
+
+```yaml
+jobs:
+...
+```
+
+#### Set Configuration
+
+The build artifact to contains in the job
+
+```yaml
+  set-configuration:
+    name: set appservice configuration
+    runs-on: [ self-hosted, <username>-sbx, vm-<username>SelfHost-az-usw3-sbx-001 ]
+    environment: dev
+```
+
+##### Steps
+
+```yaml
+    steps:
+    - name: Login via Azure CLI
+      run: |
+        az login --identity --username ${{ secrets.AZURE_SELFHOST_USER_MANAGE_IDENTITY_CLIENT_ID }}
+        az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: Set Web App Settings
+      uses: Azure/appservice-settings@v1
+      with:
+        app-name: app-<username>-az-usw3-dev-001
+        app-settings-json: |
+          [
+            {
+              "name": "TutorialDatabase__ConnectionString",
+              "value": "${{ secrets.TUTORIAL_DB_CONNECTION_STRING }}",
+              "slotSetting": false
+            },
+            {
+              "name": "TutorialDatabase__DatabaseName",
+              "value": "dev-tutorial",
+              "slotSetting": false
+            },
+            {
+              "name": "TutorialDatabase__TutorialCollectionName",
+              "value": "tutorials",
+              "slotSetting": false
+            }
+          ]
+```
+
+<img src="../src/cd-conf-dev.png">
+
+Commit and push code to GitHub repository on main branch.
+
+Go back to repository `<username>-pipeline` on tab Actions you can see workflow named ```DEV - Tutorial BE Configuration``` visible
+
+<img src="../src/show-workflow-cd-dev-conf.png">
+
+before run this workflow you must config variable secret at Settings > Environments > dev
+
+
+Enter 
+
+- Name : ```TUTORIAL_DB_CONNECTION_STRING```
+- Value : ```mongodb://...```
+
+<img src="../src/add-secret-env-dev-conn.png">
+
+and Go back to Acitons tab and run workflows ```DEV - Tutorial BE Configuration```.
+
+<img src="../src/run-workflow-deploy-cd-conf.png">
+
+<img src="../src/inside-workflow-dev-conf.png">
+
+**Summany Code**
+
+```yaml
+name: DEV - Tutorial BE Configuration
+
+on:
+  workflow_dispatch:
+
+jobs:
+  set-configuration:
+    name: set appservice configuration
+    runs-on: [ self-hosted, <username>-sbx, vm-<username>SelfHost-az-usw3-sbx-001 ]
+    environment: dev
+    steps:
+    - name: Login via Azure CLI
+      run: |
+        az login --identity --username ${{ secrets.AZURE_SELFHOST_USER_MANAGE_IDENTITY_CLIENT_ID }}
+        az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: Set Web App Settings
+      uses: Azure/appservice-settings@v1
+      with:
+        app-name: app-<username>-az-usw3-dev-001
+        app-settings-json: |
+          [
+            {
+              "name": "TutorialDatabase__ConnectionString",
+              "value": "${{ secrets.TUTORIAL_DB_CONNECTION_STRING }}",
+              "slotSetting": false
+            },
+            {
+              "name": "TutorialDatabase__DatabaseName",
+              "value": "dev-tutorial",
+              "slotSetting": false
+            },
+            {
+              "name": "TutorialDatabase__TutorialCollectionName",
+              "value": "tutorials",
+              "slotSetting": false
+            }
+          ]
+          
+```
+
+**Logging**
+
+<img src="../src/log-cd-deploy-dev-conf.png">
