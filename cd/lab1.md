@@ -1,6 +1,6 @@
 # Lab1: Create CD Repoistory pipeline on GitHub
 
-Learn how application working and implementation concepts.
+Learn how create repository CD on GitHub and working to preparing to Deploy pipeline to Azure.
 
 After completing this lab, you'll be able to:
 
@@ -67,3 +67,67 @@ and then click Connect button.
 
 <img src="../src/in-vm-login.png">
 
+### Checking Install GitHub Self-hosted Runner
+
+In the VM check the docker-compose.yml and .env already and conatainer has working.
+
+```bash
+cd github-runner-<username>
+ls -al
+```
+
+you can see the docker-compose.yml and .env
+
+check variables in .env and replace Token to connect with GitHub repository `<username>-pipeline`
+
+```bash
+cat .env
+vi .env
+```
+
+<img src="../src/check-docker-compose-file.png">
+
+<img src="../src/edit-env.png">
+
+
+*If you don't self-hosted or not ready you must back to Day 3 | Networking on [Setup VM Self-hosted](https://mimotech.atlassian.net/wiki/spaces/CDC/pages/12863209535/Day+03+Labs+-+Networking+and+VM#Install-Self-hosted-Github-Runner) Labs*
+
+When checking and edited and then docker compose again with command
+
+```bash
+docker compose down
+docker compose up -d
+```
+
+<img src="../src/run-docker-compse-d.png">
+
+ 
+*Inspects contaner runing use this command*
+
+check contaier is running...
+
+```bash
+docker container ls
+```
+
+check docker compose apply on file
+
+```bash
+docker compose config
+```
+
+check container log
+
+```bash
+docker logs <container-name> -f
+```
+
+If everything is work go back to repository in settings > actions > runner
+
+you can see self-hosted on Repos.
+
+before
+<img src="../src/repo-selfhost-runner-no.png">
+
+after
+<img src="../src/repo-selfhost-runner-runing.png">
