@@ -532,6 +532,11 @@ and Go back to Acitons tab and run workflows ```DEV - Tutorial BE Configuration`
 
 <img src="../src/inside-workflow-dev-conf.png">
 
+Result Output to set on Configuration Webapp.
+
+<img src="../src/conf-workflow-result.png">
+
+
 **Summany Code**
 
 ```yaml
@@ -579,3 +584,4 @@ jobs:
 **Logging**
 
 <img src="../src/log-cd-deploy-dev-conf.png">
+
