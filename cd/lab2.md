@@ -41,7 +41,7 @@ On the Azure Spoke checking list belows
 <img src="../src/rg-cd.png">
 
 ## Initialize GitHub workflow
-Checkout the source code from GitHub github.com/<username>/<username>-pipeline.
+Checkout the source code from GitHub ```github.com/<username>/<username>-pipeline```.
 
 Open the terminal following command below
 
@@ -161,4 +161,7 @@ The build artifact to contains in the job
 ```
 
 <img src="../src/cd-build-dev.png">
+
+Commit and push code to GitHub repository on main branch.
+
 
