@@ -164,4 +164,27 @@ The build artifact to contains in the job
 
 Commit and push code to GitHub repository on main branch.
 
+Go back to repository `<username>-pipeline` on tab Actions you can see workflow named ```DEV - App Deploy``` visible
 
+<img src="../src/show-workflow-cd-dev.png">
+
+before run this workflow you must config variable secret at Settings > Environments > dev
+
+if you don't found environment named ```dev``` you can click create New environment button and enter ```dev```
+
+<img src="../src/set-env-secret.png">
+
+click on envionment ```dev``` name to set Environment secrets
+
+Enter 
+
+- ```WORKFLOW_TOKEN```
+- Secret : ```ghp_xxxxxxxxxxxxxxxxx```
+
+<img src="../src/add-secret-env-dev.png">
+
+and Go back to Acitons tab and run workflows ```DEV - App Deploy```.
+
+<img src="../src/inside-workflow-dev-1.png">
+
+<img src="../src/inside-workflow-dev-1-log-artifact.png">
