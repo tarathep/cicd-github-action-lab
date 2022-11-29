@@ -116,7 +116,7 @@ jobs:
 ...
 ```
 
-#### build-app-service
+#### Build
 
 The build artifact to contains in the job
 
@@ -188,3 +188,239 @@ and Go back to Acitons tab and run workflows ```DEV - App Deploy```.
 <img src="../src/inside-workflow-dev-1.png">
 
 <img src="../src/inside-workflow-dev-1-log-artifact.png">
+
+**Summany Code**
+
+```yaml
+name: DEV - App Deploy
+
+on:
+  repository_dispatch:
+    types: [<username>-tutorial-be-cd-dev]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Repository branch or tag"
+        required: true
+        default: "develop"
+
+env:
+  REPOSITORY: "<username>/<username>-tutorial-backend"
+  GITREF: ${{ github.event_name == 'repository_dispatch' && 'develop' || github.event.inputs.ref }}
+  ARTIFACT_NAME: "artifact-tutorial-be-0.0.1-snapshot"
+  APP_RESOURCE_NAME: app-<username>-az-usw3-dev-001
+
+jobs:
+  build-app-service:
+    name: Build
+    runs-on: ubuntu-latest
+    environment:
+      name: dev
+    steps:
+    - name: "Checkout project"
+      uses: actions/checkout@v2
+      with:
+        repository: ${{ env.REPOSITORY }}
+        ref: ${{ env.GITREF }}
+        token: ${{ secrets.WORKFLOW_TOKEN }}
+            
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v2.1.0
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Pack Artifact
+      run: cd Tutorial.Api/bin/Release/net6.0 && tar -zcvf ${{ env.ARTIFACT_NAME }}.tar.gz *
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.ARTIFACT_NAME }}
+        path: '${{ github.workspace }}/Tutorial.Api/bin/Release/net6.0/${{ env.ARTIFACT_NAME }}.tar.gz'
+```
+
+**Logging**
+
+<img src="../src/log-cd-build-dev.png">
+
+
+---
+
+
+#### Deploy
+
+Deploy to Azure Webapp on Environment Dev
+
+```yaml
+  deploy-app-service:
+    name: Deploy
+    runs-on: [ self-hosted, <user>-sbx, vm-<username>SelfHost-az-usw3-sbx-001 ]
+    needs: [build-app-service]
+    environment:
+      name: dev
+      url: https://dev-<username>-web.azure101.ml/swagger/index.html
+ 
+```
+
+##### Steps
+
+```yaml
+    steps:
+    - name: Download Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ env.ARTIFACT_NAME }}
+        path: ${{ github.workspace }}/${{ env.ARTIFACT_NAME }}
+    
+    - name: Extract Artifact
+      run : |
+        tar -zxf ${{ github.workspace }}/${{ env.ARTIFACT_NAME }}/${{ env.ARTIFACT_NAME }}.tar.gz -C ${{ github.workspace }}/${{ env.ARTIFACT_NAME }}
+        rm ${{ github.workspace }}/${{ env.ARTIFACT_NAME }}/${{ env.ARTIFACT_NAME }}.tar.gz
+    - name: Login via Azure CLI
+      run: |
+        az login --identity --username ${{ secrets.AZURE_SELFHOST_USER_MANAGE_IDENTITY_CLIENT_ID }}
+        az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    - name: Deploy to Azure WebApp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.APP_RESOURCE_NAME }}
+        package: ${{ github.workspace }}/${{ env.ARTIFACT_NAME }}
+    
+    - name: Clear Cache
+      run: |
+        rm -rf ${{ github.workspace }}/${{ env.ARTIFACT_NAME }}
+```
+
+<img src="../src/commit-push-code-deploy-dev.png">
+
+Commit and push code to GitHub repository on main branch.
+
+Go back to repository `<username>-pipeline` on tab Actions you can see workflow named ```DEV - App Deploy``` visible
+
+<img src="../src/show-workflow-cd-dev.png">
+
+before run this workflow you must config variables secret at Settings > Environments > dev
+
+Enter
+
+- AZURE_SELFHOST_USER_MANAGE_IDENTITY_CLIENT_ID : ```xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx```
+- AZURE_SUBSCRIPTION_ID : ```xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx```
+
+<img src="../src/conf-secret-cd-dev.png">
+
+*AZURE_SELFHOST_USER_MANAGE_IDENTITY_CLIENT_ID* you can copy ID from resource ```id-<usernameSelfhost-az-usw3-sbx-001>``` on Overview page.
+
+<img src="../src/id-client-id.png">
+
+and check permission on Azure role assignment before run workflow
+
+*if you not found role please add role assignement in your resource group*
+
+<img src="../src/id-role.png">
+
+Run deploy workflow dev
+
+<img src="../src/run-workflow-deploy-cd-dev.png">
+
+<img src="../src/deploy-cd-dev-success.png">
+
+**Summary Code**
+
+```yaml
+name: DEV - App Deploy
+
+on:
+  repository_dispatch:
+    types: [<username>-tutorial-be-cd-dev]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Repository branch or tag"
+        required: true
+        default: "develop"
+
+env:
+  REPOSITORY: "<username>/<username>-tutorial-backend"
+  GITREF: ${{ github.event_name == 'repository_dispatch' && 'develop' || github.event.inputs.ref }}
+  ARTIFACT_NAME: "artifact-tutorial-be-0.0.1-snapshot"
+  APP_RESOURCE_NAME: app-<username>-az-usw3-dev-001
+
+jobs:
+  build-app-service:
+    name: Build
+    runs-on: ubuntu-latest
+    environment:
+      name: dev
+    steps:
+    - name: "Checkout project"
+      uses: actions/checkout@v2
+      with:
+        repository: ${{ env.REPOSITORY }}
+        ref: ${{ env.GITREF }}
+        token: ${{ secrets.WORKFLOW_TOKEN }}
+            
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v2.1.0
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Pack Artifact
+      run: cd Tutorial.Api/bin/Release/net6.0 && tar -zcvf ${{ env.ARTIFACT_NAME }}.tar.gz *
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.ARTIFACT_NAME }}
+        path: '${{ github.workspace }}/Tutorial.Api/bin/Release/net6.0/${{ env.ARTIFACT_NAME }}.tar.gz'
+
+  deploy-app-service:
+    name: Deploy
+    runs-on: [ self-hosted, tara-sbx, vm-<username>SelfHost-az-usw3-sbx-001 ]
+    needs: [build-app-service]
+    environment:
+      name: dev
+      url: https://dev-<username>-web.azure101.ml/swagger/index.html
+    
+    steps:
+    - name: Download Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ env.ARTIFACT_NAME }}
+        path: ${{ github.workspace }}/${{ env.ARTIFACT_NAME }}
+    
+    - name: Extract Artifact
+      run : |
+        tar -zxf ${{ github.workspace }}/${{ env.ARTIFACT_NAME }}/${{ env.ARTIFACT_NAME }}.tar.gz -C ${{ github.workspace }}/${{ env.ARTIFACT_NAME }}
+        rm ${{ github.workspace }}/${{ env.ARTIFACT_NAME }}/${{ env.ARTIFACT_NAME }}.tar.gz
+    
+    - name: Login via Azure CLI
+      run: |
+        az login --identity --username ${{ secrets.AZURE_SELFHOST_USER_MANAGE_IDENTITY_CLIENT_ID }}
+        az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: Deploy to Azure WebApp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.APP_RESOURCE_NAME }}
+        package: ${{ github.workspace }}/${{ env.ARTIFACT_NAME }}
+    
+    - name: Clear Cache
+      run: |
+        rm -rf ${{ github.workspace }}/${{ env.ARTIFACT_NAME }}
+```
+
+**Logging**
+
+<img src="../src/log-cd-deploy-dev.png">
