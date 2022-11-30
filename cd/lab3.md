@@ -383,6 +383,9 @@ Result Output to set on Configuration Webapp.
 
 <img src="../src/conf-workflow-result-sit.png">
 
+Try to access via url `https://sit-<username>-web.azure101.ml/swagger/index.html`
+
+<img src="../src/test-sit-swagger-cd.png">
 
 **Summany Code**
 
@@ -431,6 +434,7 @@ jobs:
 **Logging**
 
 <img src="../src/log-cd-deploy-sit-conf.png">
+
 
 ---
 

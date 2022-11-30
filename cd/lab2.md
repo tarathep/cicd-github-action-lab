@@ -536,6 +536,10 @@ Result Output to set on Configuration Webapp.
 
 <img src="../src/conf-workflow-result.png">
 
+Try to access via url `https://dev-<username>-web.azure101.ml/swagger/index.html`
+
+<img src="../src/test-dev-swagger-cd.png">
+
 
 **Summany Code**
 
@@ -584,4 +588,3 @@ jobs:
 **Logging**
 
 <img src="../src/log-cd-deploy-dev-conf.png">
-
