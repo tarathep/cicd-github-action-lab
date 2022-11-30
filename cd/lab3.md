@@ -67,7 +67,7 @@ On Create SIT - Tutorial BE Deploy workflows is working when manunal workflows d
 
 <img src="../src/cd-sit-workflow.png">
 
-Create the new file named ```sit-tutorial-be-deploy.yml``` inside ```.github/workflows``` this on the Workflows SIT which contains 1 workflow DEV Deploy.
+Create the new file named ```sit-tutorial-be-deploy.yml``` inside ```.github/workflows``` this on the Workflows SIT which contains 1 workflow SIT Deploy.
 
 <img src="../src/cd-workflow-ymal-name-sit.png">
 
@@ -104,7 +104,7 @@ env:
   REPOSITORY: "<username>/<username>-tutorial-backend"
   GITREF: ${{ github.event.inputs.ref }}
   ARTIFACT_NAME: "artifact-tutorial-backend"
-  APP_RESOURCE_NAME: app-<username>-az-usw3-dev-001
+  APP_RESOURCE_NAME: app-<username>-az-usw3-sit-001
 ```
 
 ### Jobs
@@ -118,7 +118,7 @@ jobs:
 
 #### Deploy
 
-The build artifact to contains in the job
+The deploy artifact to contains in the job
 
 ```yaml
   deploy-app-service:
@@ -222,7 +222,7 @@ env:
   REPOSITORY: "<username>/<username>-tutorial-backend"
   GITREF: ${{ github.event.inputs.ref }}
   ARTIFACT_NAME: "artifact-tutorial-backend"
-  APP_RESOURCE_NAME: app-<username>-az-usw3-dev-001
+  APP_RESOURCE_NAME: app-<username>-az-usw3-sit-001
 
 jobs:
   deploy-app-service:
@@ -272,3 +272,312 @@ jobs:
 **Logging**
 
 <img src="../src/log-cd-deploy-sit.png">
+
+---
+## Create SIT - Configuration Set workflows
+
+Configuraition to deploy to Azure WebApp.
+
+<img src="../src/conf-workflow.png">
+
+Create the new file named ```sit-tutorial-be-configuration-set.yml``` inside ```.github/workflows``` this on the Workflows which contains configure to Appservice (Webapp)
+
+<img src="../src/cd-conf-new-file-sit.png">
+
+### Name
+
+The first name starts with declare name of workflows
+
+```yaml
+name: SIT - Tutorial BE Configuration
+```
+
+### On (Events that trigger workflows)
+
+Enter events when do you want to execute or trigger the workflows
+
+you can see more of event type at [Events that trigger workflows - GitHub Docs](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows)
+
+```yaml
+on:
+  workflow_dispatch:
+```
+
+### Jobs
+
+Groups together all the jobs that run in the DEV - Tutorial BE Deploy workflow.
+
+```yaml
+jobs:
+...
+```
+
+#### Set Configuration
+
+The build artifact to contains in the job
+
+```yaml
+  set-configuration:
+    name: set appservice configuration
+    runs-on: [ self-hosted, <username>-sbx, vm-<username>SelfHost-az-usw3-sbx-001 ]
+    environment: sit
+```
+
+##### Steps
+
+```yaml
+    steps:
+    - name: Login via Azure CLI
+      run: |
+        az login --identity --username ${{ secrets.AZURE_SELFHOST_USER_MANAGE_IDENTITY_CLIENT_ID }}
+        az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: Set Web App Settings
+      uses: Azure/appservice-settings@v1
+      with:
+        app-name: app-<username>-az-usw3-sit-001
+        app-settings-json: |
+          [
+            {
+              "name": "TutorialDatabase__ConnectionString",
+              "value": "${{ secrets.TUTORIAL_DB_CONNECTION_STRING }}",
+              "slotSetting": false
+            },
+            {
+              "name": "TutorialDatabase__DatabaseName",
+              "value": "sit-tutorial",
+              "slotSetting": false
+            },
+            {
+              "name": "TutorialDatabase__TutorialCollectionName",
+              "value": "tutorials",
+              "slotSetting": false
+            }
+          ]
+```
+
+<img src="../src/cd-conf-sit.png">
+
+Commit and push code to GitHub repository on main branch.
+
+Go back to repository `<username>-pipeline` on tab Actions you can see workflow named ```SIT - Tutorial BE Configuration``` visible
+
+<img src="../src/show-workflow-cd-sit-conf.png">
+
+before run this workflow you must config variable secret at Settings > Environments > sit
+
+Enter 
+
+- Name : ```TUTORIAL_DB_CONNECTION_STRING```
+- Value : ```mongodb://...```
+
+<img src="../src/add-secret-env-dev-conn.png">
+
+and Go back to Acitons tab and run workflows ```SIT - Tutorial BE Configuration```.
+
+<img src="../src/run-workflow-deploy-cd-conf-sit.png">
+
+<img src="../src/inside-workflow-sit-conf.png">
+
+Result Output to set on Configuration Webapp.
+
+<img src="../src/conf-workflow-result-sit.png">
+
+
+**Summany Code**
+
+```yaml
+name: SIT - Tutorial BE Configuration
+
+on:
+  workflow_dispatch:
+
+jobs:
+  set-configuration:
+    name: set appservice configuration
+    runs-on: [ self-hosted, <username>-sbx, vm-<username>SelfHost-az-usw3-sbx-001 ]
+    environment: sit
+    steps:
+    - name: Login via Azure CLI
+      run: |
+        az login --identity --username ${{ secrets.AZURE_SELFHOST_USER_MANAGE_IDENTITY_CLIENT_ID }}
+        az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: Set Web App Settings
+      uses: Azure/appservice-settings@v1
+      with:
+        app-name: app-<username>-az-usw3-sit-001
+        app-settings-json: |
+          [
+            {
+              "name": "TutorialDatabase__ConnectionString",
+              "value": "${{ secrets.TUTORIAL_DB_CONNECTION_STRING }}",
+              "slotSetting": false
+            },
+            {
+              "name": "TutorialDatabase__DatabaseName",
+              "value": "sit-tutorial",
+              "slotSetting": false
+            },
+            {
+              "name": "TutorialDatabase__TutorialCollectionName",
+              "value": "tutorials",
+              "slotSetting": false
+            }
+          ]
+          
+```
+
+**Logging**
+
+<img src="../src/log-cd-deploy-sit-conf.png">
+
+---
+
+## DAST workflows (Dynamic Application Security Testing)
+
+On DAST workflows is working after SIT deploy succeeded that base on [OWASP ZAP](https://www.zaproxy.org/) tool
+
+<img src="../src/workflow-dast-flow.png">
+
+this workflow locate on CI repository you will add workflow at `https://github.com/<username>/<username>/tutorial-backend`
+
+Download and Open tutorial-backend project with Visual Studio Code
+
+```bash
+git clone https://github.com/<username>/<username>/tutorial-backend
+
+cd <username>/tutorial-backend
+
+code .
+```
+
+Inside `.github/workflows` directory.
+
+create the new file named ```dast-tests.yaml``` inside ```.github/workflows```
+
+<img src="../src/create-new-file-workflow-dast.png">
+
+### Name
+
+The first name starts with declare name of workflows
+
+```yaml
+name: DAST OWSAP ZAP (No auth)
+```
+
+### On (Events that trigger workflows)
+
+Enter events when do you want to execute or trigger the workflows
+
+you can see more of event type at [Events that trigger workflows - GitHub Docs](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows)
+
+```yaml
+on:
+  repository_dispatch:
+    types: [<username>-tutorial-be-dast-sit]
+  workflow_dispatch:
+    inputs:
+      env:
+        description: Environment
+        required: true
+        default: 'sit'
+```
+
+### Jobs
+
+Groups together all the jobs that run in the SIT - Tutorial BE Deploy workflow.
+
+```yaml
+jobs:
+...
+```
+
+#### DAST Scan
+
+The DAST SCAN to contain in jobs
+
+```yaml
+  dast_zap_scan:
+    name: DAST (OWASP ZAP)
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'repository_dispatch' && 'sit' || github.event.inputs.env }}
+```
+
+##### Steps
+
+```yaml
+    steps:
+    - name: ZAP Scan
+      uses: zaproxy/action-full-scan@v0.4.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        target: "https://${{ github.event_name == 'repository_dispatch' && 'sit' || github.event.inputs.env }}-<username>-web.azure101.ml/api/tutorials"
+            
+    - name: Create sarif file from zaproxy results
+      uses: SvanBoxel/zaproxy-to-ghas@main
+    
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+          sarif_file: results.sarif
+```
+
+<img src="../src/dast-vscode.png">
+
+Commit and push code to GitHub repository on main branch.
+
+Go back to repository `<username>/<username>-tutorial-backend` on tab Actions you can see workflow named ```DAST OWASP ZAP (No auth)``` visible
+
+Run workflow enter environment to scanning
+
+<img src="../src/show-workflow-dast.png">
+
+<img src="../src/inside-workflow-dast-autorun.png">
+
+<img src="../src/dast-report-artifact.png">
+
+Report OWASP ZAP
+
+<img src="../src/example-dast-report.png">
+
+**Summary Code**
+
+```yaml
+name: "DAST OWSAP ZAP (No auth)"
+
+on:
+  repository_dispatch:
+    types: [<username>-tutorial-be-dast-sit]
+  workflow_dispatch:
+    inputs:
+      env:
+        description: Environment
+        required: true
+        default: 'sit'
+
+jobs:
+  dast_zap_scan:
+    name: DAST (OWASP ZAP)
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'repository_dispatch' && 'sit' || github.event.inputs.env }}
+    
+    steps:
+    - name: ZAP Scan
+      uses: zaproxy/action-full-scan@v0.4.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        target: "https://${{ github.event_name == 'repository_dispatch' && 'sit' || github.event.inputs.env }}-<username>-web.azure101.ml/api/tutorials"
+            
+    - name: Create sarif file from zaproxy results
+      uses: SvanBoxel/zaproxy-to-ghas@main
+    
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+          sarif_file: results.sarif
+```
+
+**Logging**
+
+<img src="../src/log-dast.png">
