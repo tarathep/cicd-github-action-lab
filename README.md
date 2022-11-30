@@ -1,5 +1,5 @@
-# cicd-github-action-lab
-CICD GitHub Actions Labs
+# CICD GitHub Actions Labs
+
 
 ## CI: Continuous Integration
 
