@@ -14,5 +14,4 @@
 - [Lab1: Create CD Repoistory pipeline on GitHub](./cd/lab1.md)
 - [Lab2: Implement workflows deploy to Appservice on DEV Environment](./cd/lab2.md)
 - [Lab3: Implement workflows deploy to Appservice SIT Environment](./cd/lab3.md)
-
 - [Lab4: Integration and Testing workflows](./)
