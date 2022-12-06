@@ -1,13 +1,16 @@
 # Lab1: Create CD Repoistory pipeline on GitHub
 
+<div align=center><img src="../src/lab101-diagram.svg"></div>
+
 Learn how create repository CD on GitHub and working to preparing to Deploy pipeline to Azure.
 
 After completing this lab, you'll be able to:
 
-- Describe or explain how to design and implement CICD pipeline.
+- Describe or explain how to design and implement CD pipeline simple.
+- Preparing to implement CD pipeline simple to deploy Azure App service (Webapp).
+- Connecting between GitHub Selfhost runner and GitHub repository pipeline
 
-
-In this lab we use sample application that is named Tutorial API Backend and Tutorial Frontend we focus on Backend application to deploy on Azure appsevice (Webapp).
+In this lab we use sample application that is named Tutorial API Backend and Tutorial Frontend we focus on Backend application to deploy on Azure App Sevice (Webapp).
 
 ## Prerequisites
 
