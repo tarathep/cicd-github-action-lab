@@ -1,5 +1,7 @@
 # Lab2: Implement workflows deploy to Appservice on DEV Environment
 
+<img src="../src/cd-dev-workflow.png">
+
 Learn how continuous deployment or delivery application to Azure that working on GitHub Actions and implementation basic concepts.
 
 After completing this lab, you'll be able to: 
