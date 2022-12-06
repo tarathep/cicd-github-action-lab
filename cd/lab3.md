@@ -1,5 +1,7 @@
 # Lab3: Implement workflows deploy to Appservice SIT Environment
 
+<img src="../src/cd-sit-workflow.png">
+
 Learn how continuous deployment or delivery application to Azure that working on GitHub Actions and implementation basic concepts.
 
 After completing this lab, you'll be able to: 
@@ -17,7 +19,7 @@ After completing this lab, you'll be able to:
 ## Prerequisites
 
 - <b>Required lab Install GitHub Action Runner</b>
-- <b>Required lab2 Implement workflows deploy to Appservice on DEV Environment</b>
+- <b>Required lab2 Implement workflows deploy to App service on DEV Environment</b>
 - <b>Workspace that required Software and Tools</b>
     - Git and GitHub Account
     - Text Editor (Required <b>Visual Studio Code</b>, or Visual Studio) [Visual Studio Code - Code Editing. Redefined](https://code.visualstudio.com/)
@@ -51,7 +53,7 @@ Open the terminal following command below
 git clone https://github.com/<username>/<username>-pipeline.git
 ```
 
-Open the project with text editor (Visual Studio Code) and create new folder named github/workflows in root directory of project (git).
+Open the project with text editor (Visual Studio Code) and create new folder named ```.github/workflows``` in root directory of project (git).
 
 ```bash
 mkdir .github/workflows
@@ -59,11 +61,11 @@ mkdir .github/workflows
 
 <img src="../src/cd-workflow-init.png">
 
-GitHub workflow is working on inside *.github/workflows* that contains GitHub workflows files that extension named .yaml
+GitHub workflow is working on inside ```.github/workflows``` that contains GitHub workflows files that extension named ```.yaml```
 
 ## Create SIT - Tutorial BE Deploy workflows
 
-On Create SIT - Tutorial BE Deploy workflows is working when manunal workflows dispatch will automate deploy to Azure WebApp.
+On Create SIT - Tutorial BE Deploy workflows is working when manual workflows dispatch will automate deploy to Azure WebApp.
 
 <img src="../src/cd-sit-workflow.png">
 
@@ -178,13 +180,14 @@ Go back to repository `<username>-pipeline` on tab Actions you can see workflow 
 
 <img src="../src/show-workflow-cd-sit.png">
 
-before run this workflow you must config variable secrets at Settings > Environments > sit
+before running this workflow, you must config variable secrets at *Settings > Environments > sit*
 
-if you don't found environment named ```sit``` you can click create New environment button and enter ```sit```
+if you don't found environment named ```sit``` you can click create `New environment` button and enter ```sit```
 
 <img src="../src/set-env-secret-sit.png">
 
-click on envionment ```sit``` name to set Environment secrets
+
+click on environment ```sit``` name to set Environment secrets
 
 Enter 
 
@@ -198,14 +201,14 @@ Enter
 
 <img src="../src/add-secret-env-dev.png">
 
-Go back to Acitons tab and run workflows ```SIT - Tutorial BE Deploy```.
+Go back to Actions tab and run workflows ```SIT - Tutorial BE Deploy```.
 
 <img src="../src/run-workflow-deploy-sit.png">
 
 <img src="../src/inside-workflow-sit-1-deploy.png">
 
 
-**Summany Code**
+**Summary Code**
 
 ```yaml
 name: SIT - Tutorial BE Deploy
@@ -276,11 +279,11 @@ jobs:
 ---
 ## Create SIT - Configuration Set workflows
 
-Configuraition to deploy to Azure WebApp.
+Configuration to deploy to Azure WebApp.
 
-<img src="../src/conf-workflow.png">
+<div align=center><img src="../src/conf-workflow.png"></div>
 
-Create the new file named ```sit-tutorial-be-configuration-set.yml``` inside ```.github/workflows``` this on the Workflows which contains configure to Appservice (Webapp)
+Create the new file named ```sit-tutorial-be-configuration-set.yml``` inside ```.github/workflows``` this on the Workflows which contains configure to App service (Webapp)
 
 <img src="../src/cd-conf-new-file-sit.png">
 
@@ -364,7 +367,7 @@ Go back to repository `<username>-pipeline` on tab Actions you can see workflow 
 
 <img src="../src/show-workflow-cd-sit-conf.png">
 
-before run this workflow you must config variable secret at Settings > Environments > sit
+before running this workflow, you must config variable secret at *Settings > Environments > sit*
 
 Enter 
 
@@ -373,17 +376,17 @@ Enter
 
 <img src="../src/add-secret-env-dev-conn.png">
 
-and Go back to Acitons tab and run workflows ```SIT - Tutorial BE Configuration```.
+and go back to Actions tab and run workflows ```SIT - Tutorial BE Configuration```.
 
 <img src="../src/run-workflow-deploy-cd-conf-sit.png">
 
 <img src="../src/inside-workflow-sit-conf.png">
 
-Result Output to set on Configuration Webapp.
+Result of output to set on Configuration Webapp.
 
 <img src="../src/conf-workflow-result-sit.png">
 
-Try to access via url `https://sit-<username>-web.azure101.ml/swagger/index.html`
+Try to access via URL `https://sit-<username>-web.azure101.ml/swagger/index.html`
 
 <img src="../src/test-sit-swagger-cd.png">
 
@@ -440,11 +443,11 @@ jobs:
 
 ## DAST workflows (Dynamic Application Security Testing)
 
-On DAST workflows is working after SIT deploy succeeded that base on [OWASP ZAP](https://www.zaproxy.org/) tool
+On DAST workflows is working after SIT deploy succeeded that based on [OWASP ZAP](https://www.zaproxy.org/) tool
 
-<img src="../src/workflow-dast-flow.png">
+<div align=center><img src="../src/workflow-dast-flow.png"></div>
 
-this workflow locate on CI repository you will add workflow at `https://github.com/<username>/<username>/tutorial-backend`
+this workflow locates on CI repository you will add workflow at `https://github.com/<username>/<username>/tutorial-backend`
 
 Download and Open tutorial-backend project with Visual Studio Code
 
