@@ -16,7 +16,7 @@ After completing this lab, you'll be able to:
 
 ## Prerequisites
 
-- <b>Requred lab Install GitHub Action Runner</b>
+- <b>Required lab Install GitHub Action Runner</b>
 - <b>Workspace that required Software and Tools</b>
     - Git and GitHub Account
     - Text Editor (Required <b>Visual Studio Code</b>, or Visual Studio) [Visual Studio Code - Code Editing. Redefined](https://code.visualstudio.com/)
@@ -31,7 +31,7 @@ After completing this lab, you'll be able to:
 
 ## Checking Resources Ready
 
-On the Azure Spoke checking list belows
+On the Azure Spoke checking list below
 - `app-<username>-az-usw3-dev-001`
 - `app-<username>-az-usw3-sit-001`
 - `id-<username>SelfHost-az-usw3-sbx-001`
@@ -50,7 +50,7 @@ Open the terminal following command below
 git clone https://github.com/<username>/<username>-pipeline.git
 ```
 
-Open the project with text editor (Visual Studio Code) and create new folder named github/workflows in root directory of project (git).
+Open the project with text editor (Visual Studio Code) and create new folder named `github/workflows` in root directory of project (git).
 
 ```bash
 mkdir .github/workflows
@@ -58,7 +58,7 @@ mkdir .github/workflows
 
 <img src="../src/cd-workflow-init.png">
 
-GitHub workflow is working on inside *.github/workflows* that contains GitHub workflows files that extension named .yaml
+GitHub workflow is working on inside *.github/workflows* that contains GitHub workflows files that extension named `.yaml`
 
 ## Create DEV - Tutorial BE Deploy workflows
 
@@ -169,7 +169,7 @@ Go back to repository `<username>-pipeline` on tab Actions you can see workflow 
 
 <img src="../src/show-workflow-cd-dev.png">
 
-before run this workflow you must config variable secret at Settings > Environments > dev
+before running this workflow, you must config variable secret at *Settings > Environments > dev*
 
 if you don't found environment named ```dev``` you can click create New environment button and enter ```dev```
 
@@ -179,18 +179,18 @@ click on envionment ```dev``` name to set Environment secrets
 
 Enter 
 
-- ```WORKFLOW_TOKEN```
-- Secret : ```ghp_xxxxxxxxxxxxxxxxx```
+- Name: ```WORKFLOW_TOKEN```
+- Value: ```ghp_xxxxxxxxxxxxxxxxx```
 
 <img src="../src/add-secret-env-dev.png">
 
-and Go back to Acitons tab and run workflows ```DEV - Tutorial BE Deploy```.
+and go back to Actions tab and run workflows ```DEV - Tutorial BE Deploy```.
 
 <img src="../src/inside-workflow-dev-1.png">
 
 <img src="../src/inside-workflow-dev-1-log-artifact.png">
 
-**Summany Code**
+**Summary Code**
 
 ```yaml
 name: DEV - Tutorial BE Deploy
@@ -306,7 +306,7 @@ Go back to repository `<username>-pipeline` on tab Actions you can see workflow 
 
 <img src="../src/show-workflow-cd-dev.png">
 
-before run this workflow you must config variables secret at Settings > Environments > dev
+before running this workflow, you must config variables secret at *Settings > Environments > dev*
 
 Enter
 
@@ -321,7 +321,7 @@ Enter
 
 and check permission on Azure role assignment before run workflow
 
-*if you not found role please add role assignement in your resource group*
+*if you not found role, please add role assignment in your resource group*
 
 <img src="../src/id-role.png">
 
@@ -430,7 +430,7 @@ jobs:
 
 On Create DEV - Tutorial BE Deploy workflows is working on workflows CI Dev dispatch and automate deploy to Azure WebApp.
 
-<img src="../src/conf-workflow.png">
+<div align=center><img src="../src/conf-workflow.png"></div>
 
 Create the new file named ```dev-tutorial-be-configuration-set.yml``` inside ```.github/workflows``` this on the Workflows which contains configure to Appservice (Webapp)
 
@@ -516,8 +516,7 @@ Go back to repository `<username>-pipeline` on tab Actions you can see workflow 
 
 <img src="../src/show-workflow-cd-dev-conf.png">
 
-before run this workflow you must config variable secret at Settings > Environments > dev
-
+before running this workflow, you must config variable secret at *Settings > Environments > dev*
 
 Enter 
 
@@ -526,7 +525,7 @@ Enter
 
 <img src="../src/add-secret-env-dev-conn.png">
 
-and Go back to Acitons tab and run workflows ```DEV - Tutorial BE Configuration```.
+and go back to Actions tab and run workflows ```DEV - Tutorial BE Configuration```.
 
 <img src="../src/run-workflow-deploy-cd-conf.png">
 
@@ -536,7 +535,7 @@ Result Output to set on Configuration Webapp.
 
 <img src="../src/conf-workflow-result.png">
 
-Try to access via url `https://dev-<username>-web.azure101.ml/swagger/index.html`
+Try to access via URL `https://dev-<username>-web.azure101.ml/swagger/index.html`
 
 <img src="../src/test-dev-swagger-cd.png">
 
