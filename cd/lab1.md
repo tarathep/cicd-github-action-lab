@@ -27,24 +27,25 @@ In this lab we use sample application that is named Tutorial API Backend and Tut
     - Azure Key Vault (if any)
     - Azure Application Insights (if any)
 
+
 ## 1. Create new Repository on GitHub
 
 On GitHub <i>https://github.com/{username}</i> create new Repository named ```<username>-pipeline```
 
-on the top right click New repository tab
+on the top right and `click New repository` tab
 
 <img src="../src/new-repo-on-profile.png">
 
-on page Create new repository selects in below
+On this page Create new repository selects in below
 
-- Owner : `Username`
-- Repository name : `<username>-pipeline`
+- Owner: `Username`
+- Repository name: `<username>-pipeline`
 - Description: Optional
 - Public
 - Initialze this repository with
     - Add a README.md file
 
-init branch select main to default.
+Init branch select main to default.
 
 <img src="../src/create-new-repo-cd.png">
 
@@ -52,7 +53,7 @@ init branch select main to default.
 
 ## 2. Connecting Repository with Self-hosted Runner on Azure
 
-Go to the https://portal.azure.com on your resource please check the vm named `vm-<username>SelfHost-az-usw3-sbx-001`
+Go to the https://portal.azure.com on your resource please check the VM named `vm-<username>SelfHost-az-usw3-sbx-001`
 
 <img src="../src/rg-vm-selfhosted.png">
 
@@ -72,16 +73,16 @@ and then click Connect button.
 
 ### Checking Install GitHub Self-hosted Runner
 
-In the VM check the docker-compose.yml and .env already and conatainer has working.
+In the VM check the ```docker-compose.yml``` and ```.env``` already and container has been working.
 
 ```bash
 cd github-runner-<username>
 ls -al
 ```
 
-you can see the docker-compose.yml and .env
+you can see the ```docker-compose.yml``` and ```.env```
 
-check variables in .env and replace Token to connect with GitHub repository `<username>-pipeline`
+check variables in ```.env``` and replace Token to connect with GitHub repository `<username>-pipeline`
 
 ```bash
 cat .env
@@ -125,12 +126,12 @@ check container log
 docker logs <container-name> -f
 ```
 
-If everything is work go back to repository in settings > actions > runner
+If everything is work go back to repository in `settings > actions > runner`
 
 you can see self-hosted on Repos.
 
-before
+``before``
 <img src="../src/repo-selfhost-runner-no.png">
 
-after
+``after``
 <img src="../src/repo-selfhost-runner-runing.png">
