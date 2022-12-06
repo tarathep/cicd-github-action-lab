@@ -1,6 +1,6 @@
 # Lab 1: Initialization Application
 
-<img src="../src/logo-ms.png">
+<div align=center><img src="../src/logo-ms.png"></div>
 
 Learn how application working and implementation concepts.
 
@@ -103,16 +103,22 @@ please checking system you’re ready.
 
 Check dotnet SDK 6 on your workspace
 
-
+```cmd
 dotnet --version
+```
+
 Restore dependencies and projects
 
-
+```cmd
 dotnet clean
 dotnet restore
+```
+
 And then try to run on localhost
 
-
+```cmd
 cd Tutorial.Api
 dotnet run
-PS. please check database CosmosDB that named mongo-{name}-az-usw3-sbx-001 to allow access public internet. (Specific IP address)
+```
+
+PS. please check database CosmosDB that named *mongo-{name}-az-usw3-sbx-001* to allow access public internet. (Specific IP address)
