@@ -7,11 +7,8 @@ Learn how continuous deployment or delivery application to Azure that working on
 After completing this lab, you'll be able to: 
 
 - Explain and Implement CD workflows with GitHub Actions in fundamental.
-
 - Explain Branching strategy working with each environment.
-
 - Automation workflows and how to use Actions.
-
 - Investigate and solvable working on pipeline.
 
 
